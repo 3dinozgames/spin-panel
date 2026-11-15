@@ -190,7 +190,7 @@ body.tvm header{display:none}
 .hchart svg{position:absolute;inset:0;width:100%;height:100%}
 .tv .hchart svg text{font-size:clamp(12px,.85vw,17px)}
 #x3c{height:240px;flex:none}
-@media (min-width:1101px){body.tvm{overflow:hidden}.tv{height:100vh;height:100dvh;min-height:0;grid-template-rows:auto auto auto minmax(0,1fr)}.tvrow,.tvcol,.tvc{min-height:0}.tvcol{grid-template-rows:auto minmax(0,1fr)}.tvcol1{grid-template-rows:minmax(0,1fr)}.feed{overflow-x:hidden;overflow-y:scroll}}
+@media (min-width:1101px){body.tvm{overflow:hidden}html:has(body.tvm){overflow:hidden;scrollbar-width:none}html:has(body.tvm)::-webkit-scrollbar{display:none}.tv{height:100vh;height:100dvh;min-height:0;grid-template-rows:auto auto auto minmax(0,1fr)}.tvrow,.tvcol,.tvc{min-height:0}.tvcol{grid-template-rows:auto minmax(0,1fr)}.tvcol1{grid-template-rows:minmax(0,1fr)}.feed{overflow-x:hidden;overflow-y:auto}}
 @media (max-width:1100px){.big{grid-template-columns:repeat(4,minmax(0,1fr))}.tvrow{grid-template-columns:1fr}}
 @media (max-width:620px){.big{grid-template-columns:repeat(2,minmax(0,1fr))}.tvh .clock{margin-left:0;order:5}.ret{grid-template-columns:1fr 1fr 1fr}.bt b{font-size:38px}}
 
