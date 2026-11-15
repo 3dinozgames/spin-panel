@@ -466,7 +466,7 @@ function extraHTML(j){const t=j.totals||{},daily=j.daily||[],coh=j.cohorts||[],f
       <div class="score">${sc('d1','D1 retention',avgC('d1'),'%',`hedef %${BENCH.d1[0]}+ · orta %${BENCH.d1[1]}`)}${sc('d7','D7 retention',avgC('d7'),'%',`hedef %${BENCH.d7[0]}+ · orta %${BENCH.d7[1]}`)}${sc('d30','D30 retention',avgC('d30'),'%',`hedef %${BENCH.d30[0]}+ · orta %${BENCH.d30[1]}`)}
       ${sc('stick','Yapışkanlık (DAU/MAU)',stick,'%',`her gün dönenlerin payı · hedef %${BENCH.stick[0]}+`)}${sc('play','Günlük oyun süresi',play,' dk',`oynayan başına · hedef ${BENCH.play[0]}+ dk`)}${sc('mpd','Günlük maç / oyuncu',mpd,'',`hedef ${BENCH.mpd[0]}+`)}${sc('tut','Öğreticiyi bitiren',tut,'%',`kuranların · hedef %${BENCH.tut[0]}+`)}</div></section>
     <section class="grid">
-      <div class="card"><h2>Ülkeler</h2><p class="sub">Dönemde oynayan cihazlar · telefonun bölge ayarına göre</p><p class="sub ccnote" id="x1n">ⓘ Ülke bilgisi 1.0.9 güncellemesiyle toplanmaya başladı; daha eski sürümdeki oyuncular burada görünmez.</p><div id="x1"></div></div>
+      <div class="card"><h2>Ülkeler</h2><p class="sub">Dönemde oynayan cihazlar · telefonun bölge ayarına göre</p><p class="sub ccnote" id="x1n">ⓘ Ülke verileri 1.0.9 güncellemesiyle 14 Kasım 2026 tarihinden itibaren toplanıyor; daha eski sürümdeki oyuncular burada görünmez.</p><div id="x1"></div></div>
       <div class="card"><h2>Gladyatör tercihleri</h2><p class="sub">Dönemde oynayanların son seçtiği gladyatör</p><div id="x2"></div></div>
     </section>
     <section class="card"><h2>Saatlere göre oyun</h2><p class="sub">Türkiye saatiyle, dönem boyunca o saatte oynanan maç · reklam ve bildirim saatini seçmek için</p><div id="x3"></div></section>
@@ -479,7 +479,6 @@ function extraHTML(j){const t=j.totals||{},daily=j.daily||[],coh=j.cohorts||[],f
       <div class="card"><h2>Joystick memnuniyeti</h2><p class="sub">İlk maç sonunda sorulan soruya cevaplar</p><div id="x7"></div></div>
     </section>`}
 function extraDraw(j){const t=j.totals||{},act=t.active_period||t.mau||1;
-  {const n=$('#x1n');if(n&&j.countries_since){const d=new Date(j.countries_since+'T12:00:00');const ds=d.toLocaleDateString('tr-TR',{day:'numeric',month:'long',year:'numeric'});n.textContent=`ⓘ Ülke verileri 1.0.9 güncellemesiyle ${ds} tarihinden itibaren toplanıyor; daha eski sürümdeki oyuncular burada görünmez.`}}
   hbars($('#x1'),(j.countries||[]).map(c=>({k:FLAG(c.cc)+' '+ccShort(c.cc),t:ccName(c.cc),v:c.n,sm:pct(c.n,act)+'%'})));
   const ch=j.chars||[],cs=ch.reduce((a,c)=>a+c.n,0);hbars($('#x2'),ch.map(c=>({k:CHN[c.c]||c.c,v:c.n,sm:cs?pct(c.n,cs)+'%':''})),{color:'--s2'});
   const hs=j.hours||[];const H24=[...Array(24)].map((_,h)=>(hs.find(x=>x.h===h)||{m:0}).m);
