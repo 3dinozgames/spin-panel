@@ -196,6 +196,7 @@ body.tvm header{display:none}
 
 .tv{padding-left:max(clamp(10px,1.4vw,26px),env(safe-area-inset-left));padding-right:max(clamp(10px,1.4vw,26px),env(safe-area-inset-right));padding-top:max(clamp(10px,1.4vw,26px),env(safe-area-inset-top));padding-bottom:max(clamp(10px,1.4vw,26px),env(safe-area-inset-bottom))}
 .fopt{float:right;font-size:.62em;font-weight:500;color:#cdb98f;display:inline-flex;align-items:center;gap:5px;cursor:pointer;letter-spacing:0;text-transform:none}.fopt input{accent-color:#e9b44c;width:14px;height:14px}
+.flg{display:inline-block;width:1.3em;height:.95em;object-fit:cover;border-radius:2px;vertical-align:-.12em;box-shadow:0 0 0 1px rgba(255,255,255,.12)}.flg-w{width:auto;height:auto;box-shadow:none;object-fit:initial}
 </style>
 </head>
 <body>
@@ -326,7 +327,8 @@ function render(j){const t=j.totals||{},daily=j.daily||[],days=daily.map(d=>d.da
 /* ================= 1.0.9: BASİT (TV) MOD + CANLI VERİ =================
    Basit mod 5 sn'de bir analytics_live'ı okur; sayfa yenilenmez, değişen sayılar sayarak artar/azalır.
    Detaylı mod eski panel + yeni kartlar; üstte canlı şerit 30 sn'de bir güncellenir. */
-const FLAG=cc=>/^[A-Z]{2}$/.test(cc||'')?String.fromCodePoint(...[...cc].map(c=>0x1F1E6+c.charCodeAt(0)-65)):'🌍';
+/* Windows bayrak emojilerini çizmediği için bayraklar görsel olarak yüklenir (flagcdn) */
+const FLAG=cc=>/^[A-Z]{2}$/.test(cc||'')?`<img class="flg" src="https://flagcdn.com/w40/${cc.toLowerCase()}.png" alt="${cc}" loading="lazy" decoding="async">`:'<span class="flg flg-w">🌍</span>';
 let CCN=null;try{CCN=new Intl.DisplayNames(['tr'],{type:'region'})}catch(e){}
 const CCS={US:'ABD',GB:'İngiltere',AE:'BAE',KR:'Güney Kore',CZ:'Çekya',BA:'Bosna Hersek',DO:'Dominik C.',CD:'Kongo DC'};
 const ccShort=cc=>cc?(CCS[cc]||ccName(cc)):'Bilinmiyor';
