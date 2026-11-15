@@ -198,6 +198,11 @@ body.tvm header{display:none}
 .fopt{float:right;font-size:.62em;font-weight:500;color:#cdb98f;display:inline-flex;align-items:center;gap:5px;cursor:pointer;letter-spacing:0;text-transform:none}.fopt input{accent-color:#e9b44c;width:14px;height:14px}
 .flg{display:inline-block;width:1.3em;height:.95em;object-fit:cover;border-radius:2px;vertical-align:-.12em;box-shadow:0 0 0 1px rgba(255,255,255,.12)}.flg-w{width:auto;height:auto;box-shadow:none;object-fit:initial}
 .ccnote{color:#e9c77e;background:rgba(233,180,76,.08);border:1px solid rgba(233,180,76,.25);border-radius:8px;padding:6px 9px;margin:6px 0 10px;font-size:.86em}
+.hq{position:absolute;top:10px;right:10px;width:22px;height:22px;border-radius:50%;border:1.5px solid rgba(233,180,76,.55);background:rgba(0,0,0,.35);color:#e9c77e;font:700 13px/1 inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;z-index:2;opacity:.75;transition:opacity .15s,transform .15s}.hq:hover{opacity:1;transform:scale(1.1)}
+.tile{position:relative}.bt .hq{top:clamp(8px,.8vw,14px);right:clamp(8px,.8vw,14px);width:clamp(20px,1.4vw,28px);height:clamp(20px,1.4vw,28px);font-size:clamp(12px,.9vw,16px)}
+#hqm{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:9999;padding:16px}#hqm.on{display:flex}
+.hqbox{position:relative;max-width:460px;width:100%;background:linear-gradient(#2a1a0c,#140b05);border:1.5px solid #c99a45;border-radius:16px;padding:20px 22px 16px;box-shadow:0 18px 50px rgba(0,0,0,.6);color:#f3e6c8}.hqbox h3{margin:0 30px 10px 0;color:#f6d27a;font-size:20px}.hqtx p{margin:0 0 10px;line-height:1.5;font-size:15px}.hqx{position:absolute;top:10px;right:12px;background:none;border:0;color:#e9c77e;font-size:26px;cursor:pointer;line-height:1}
+.ccsnote{margin:10px 0 6px;font-size:.82em;color:#bfa77a;line-height:1.35}
 </style>
 </head>
 <body>
@@ -272,13 +277,13 @@ function render(j){const t=j.totals||{},daily=j.daily||[],days=daily.map(d=>d.da
       <form class="rng" id="rng" aria-label="Tarih aralığı"><label class="dbox"><span>Başlangıç</span><input type="date" id="rf" value="${RF}" max="${TD}"></label><label class="dbox"><span>Bitiş</span><input type="date" id="rt" value="${RT}" max="${TD}"></label><button class="btn pri" type="submit">Uygula</button></form><button class="btn" id="ref">Yenile</button><button class="btn" id="out" title="Şifreyi bu cihazdan sil">Çıkış</button></div></header>
   <main><div class="livestrip" id="lstrip" hidden></div>${NO_RANGE?`<p class="warn">Tarih aralığı için Supabase'de <b>supabase_v14_panel.sql</b> çalıştırılmalı. Şimdilik en yakın hazır dönem gösteriliyor.</p>`:''}${NEED16?`<p class="warn">"Aktif oyuncu" ve "Giriş yapan" kartları için Supabase'de <b>supabase_v16_panel.sql</b> çalıştırılmalı.</p>`:''}
     <section class="tiles">
-      <div class="tile"><span>Kurulum</span><b>${fmt(K.inst)}</b><em>toplam: ${fmt(t.installs)}</em></div>
-      <div class="tile"><span>Aktif oyuncu</span><b>${K.act!=null?fmt(K.act):'–'}</b><em>günlük ort.: ${fmt(K.avgDau)}</em></div>
-      <div class="tile"><span>Maç</span><b>${fmt(K.mat)}</b><em>${K.ply?'oyuncu başı: '+(K.mat/K.ply).toFixed(1):'günlük ort.: '+fmt(Math.round(K.mat/ND))}</em></div>
-      <div class="tile"><span>Oturum</span><b>${fmt(K.ses)}</b><em>günlük ort.: ${fmt(Math.round(K.ses/ND))}</em></div>
-      <div class="tile"><span>Ort. D1 retention</span><b>${avg('d1')!=null?avg('d1')+'%':'–'}</b><em>D7: ${avg('d7')!=null?avg('d7')+'%':'–'} · D30: ${avg('d30')!=null?avg('d30')+'%':'–'}</em></div>
-      <div class="tile"><span>Toplam gladyatör</span><b>${t.gladiators!=null?fmt(t.gladiators):'–'}</b><em>${t.gladiators!=null?'kayıtlı hesap':'v27 SQL çalışınca görünür'}</em></div>
-      <div class="tile"><span>Giriş yapan</span><b>${K.sig!=null?fmt(K.sig):'–'}</b><em>${K.sig!=null&&K.act?pct(K.sig,K.act)+'% aktiflerin':'dönemde oynayan'}</em></div>
+      <div class="tile"><button class="hq" data-h="inst" title="Nasıl hesaplanıyor?">?</button><span>Kurulum</span><b>${fmt(K.inst)}</b><em>toplam: ${fmt(t.installs)}</em></div>
+      <div class="tile"><button class="hq" data-h="act" title="Nasıl hesaplanıyor?">?</button><span>Aktif oyuncu</span><b>${K.act!=null?fmt(K.act):'–'}</b><em>günlük ort.: ${fmt(K.avgDau)}</em></div>
+      <div class="tile"><button class="hq" data-h="dmat" title="Nasıl hesaplanıyor?">?</button><span>Maç</span><b>${fmt(K.mat)}</b><em>${K.ply?'oyuncu başı: '+(K.mat/K.ply).toFixed(1):'günlük ort.: '+fmt(Math.round(K.mat/ND))}</em></div>
+      <div class="tile"><button class="hq" data-h="ses" title="Nasıl hesaplanıyor?">?</button><span>Oturum</span><b>${fmt(K.ses)}</b><em>günlük ort.: ${fmt(Math.round(K.ses/ND))}</em></div>
+      <div class="tile"><button class="hq" data-h="d1" title="Nasıl hesaplanıyor?">?</button><span>Ort. D1 retention</span><b>${avg('d1')!=null?avg('d1')+'%':'–'}</b><em>D7: ${avg('d7')!=null?avg('d7')+'%':'–'} · D30: ${avg('d30')!=null?avg('d30')+'%':'–'}</em></div>
+      <div class="tile"><button class="hq" data-h="dgla" title="Nasıl hesaplanıyor?">?</button><span>Toplam gladyatör</span><b>${t.gladiators!=null?fmt(t.gladiators):'–'}</b><em>${t.gladiators!=null?'kayıtlı hesap':'v27 SQL çalışınca görünür'}</em></div>
+      <div class="tile"><button class="hq" data-h="sig" title="Nasıl hesaplanıyor?">?</button><span>Giriş yapan</span><b>${K.sig!=null?fmt(K.sig):'–'}</b><em>${K.sig!=null&&K.act?pct(K.sig,K.act)+'% aktiflerin':'dönemde oynayan'}</em></div>
     </section>
     <section class="grid">
       <div class="card"><h2>Günlük oyuncu ve kurulum</h2><p class="sub">${PL} · aktif cihaz (DAU) ve yeni kurulum</p><div id="c1"></div></div>
@@ -388,18 +393,18 @@ function buildTV(){document.body.classList.add('tvm');
     <div class="tvh"><img class="plogo" src="${LOGO}" alt="Spin Gladiators"><h1>Canlı Panel</h1><span class="st" id="tvst"></span><span class="clock" id="tvclk"></span>${modeSeg()}<button class="btn" id="tvfs" title="Tam ekran">⛶ Tam ekran</button></div>
     <div id="tvwarn" style="min-height:0"></div>
     <section class="big">
-      <div class="bt hl"><span><i class="dot"></i>Şu an oyunda</span><b id="v_on">–</b><em id="e_on">&nbsp;</em></div>
-      <div class="bt"><span>Bugün oynayan</span><b id="v_dau">–</b><em id="e_dau">&nbsp;</em></div>
-      <div class="bt"><span>Bugün yeni oyuncu</span><b id="v_new">–</b><em id="e_new">&nbsp;</em></div>
-      <div class="bt"><span>Bugün maç</span><b id="v_mat">–</b><em id="e_mat">&nbsp;</em></div>
-      <div class="bt"><span>Toplam oyuncu</span><b id="v_tot">–</b><em id="e_tot">&nbsp;</em></div>
-      <div class="bt"><span>Toplam gladyatör</span><b id="v_gla">–</b><em id="e_gla">&nbsp;</em></div>
-      <div class="bt"><span>Oyun süresi / kişi</span><b id="v_ply">–</b><em id="e_ply">&nbsp;</em></div>
+      <div class="bt hl"><button class="hq" data-h="on" title="Nasıl hesaplanıyor?">?</button><span><i class="dot"></i>Şu an oyunda</span><b id="v_on">–</b><em id="e_on">&nbsp;</em></div>
+      <div class="bt"><button class="hq" data-h="dau" title="Nasıl hesaplanıyor?">?</button><span>Bugün oynayan</span><b id="v_dau">–</b><em id="e_dau">&nbsp;</em></div>
+      <div class="bt"><button class="hq" data-h="new" title="Nasıl hesaplanıyor?">?</button><span>Bugün yeni oyuncu</span><b id="v_new">–</b><em id="e_new">&nbsp;</em></div>
+      <div class="bt"><button class="hq" data-h="mat" title="Nasıl hesaplanıyor?">?</button><span>Bugün maç</span><b id="v_mat">–</b><em id="e_mat">&nbsp;</em></div>
+      <div class="bt"><button class="hq" data-h="tot" title="Nasıl hesaplanıyor?">?</button><span>Toplam oyuncu</span><b id="v_tot">–</b><em id="e_tot">&nbsp;</em></div>
+      <div class="bt"><button class="hq" data-h="gla" title="Nasıl hesaplanıyor?">?</button><span>Toplam gladyatör</span><b id="v_gla">–</b><em id="e_gla">&nbsp;</em></div>
+      <div class="bt"><button class="hq" data-h="ply" title="Nasıl hesaplanıyor?">?</button><span>Oyun süresi / kişi</span><b id="v_ply">–</b><em id="e_ply">&nbsp;</em></div>
     </section>
     <section class="tvrow">
       <div class="tvc"><h2>Saat saat maçlar <small>bugün ve dün aynı saatler</small></h2><div class="hchart" id="tvh"></div></div>
       <div class="tvcol tvcol1">
-        <div class="tvc" style="min-height:0"><h2>Son olaylar <small id="tvfn"></small><label class="fopt"><input type="checkbox" id="tvopen"> girişler</label></h2><ul class="feed" id="tvfeed"></ul><div class="ccs" id="tvcc" style="margin-top:10px"></div></div>
+        <div class="tvc" style="min-height:0"><h2>Son olaylar <small id="tvfn"></small><label class="fopt"><input type="checkbox" id="tvopen"> girişler</label></h2><ul class="feed" id="tvfeed"></ul><p class="ccsnote" id="tvccn"></p><div class="ccs" id="tvcc"></div></div>
       </div>
     </section></main>`;
   bindMode();$('#tvfs').onclick=()=>{if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});else document.documentElement.requestFullscreen().catch(()=>{})};
@@ -441,6 +446,7 @@ function renderLive(j){if(!TVB)buildTV();
     return `<li class="${nw?'nw':''}"><span class="fl" title="${f.cc?ccName(f.cc):'Ülke bilinmiyor'}">${FLAG(f.cc)}</span><span class="cn" title="${f.cc?ccName(f.cc):'Ülke bilinmiyor'}">${ccShort(f.cc)}</span><span class="tx">${FTX(f)}</span><time>${ago(f.at)}</time></li>`}).join(''):`<li><span class="tx muted">${LIVE_FALLBACK?'v25 SQL çalıştırılınca görünür.':'Son 3 saatte öne çıkan olay yok.'}</span></li>`;
   if(FE&&FST)FE.scrollTop=FST;/* 5 sn'lik yenilemede kaydırma yeri korunur */setTimeout(()=>document.querySelectorAll('#tvfeed li.nw').forEach(l=>l.classList.remove('nw')),2500);TV_T=1;
   {/* listede görünen olayların sayısı ve bu olayların ülkelere dağılımı */const sh=fd.slice(0,60),cn={};sh.forEach(f=>{const k=f.cc||'';cn[k]=(cn[k]||0)+1});
+   if($('#tvccn'))$('#tvccn').textContent=sh.length?`Aşağıdaki sayılar yalnızca yukarıdaki son ${sh.length} olayın ülkelere göre dağılımını gösterir; tüm oyuncuları kapsamaz.`:'';
    if($('#tvfn'))$('#tvfn').textContent=sh.length?`son ${sh.length} olay · ${Object.keys(cn).length} ülke`:'';
    $('#tvcc').innerHTML=Object.entries(cn).sort((a,b)=>b[1]-a[1]).map(([cc,n])=>`<span title="${cc?ccName(cc):'Ülke bilinmiyor'}: ${n} olay">${FLAG(cc)} ${ccShort(cc)} <b>${fmt(n)}</b></span>`).join('')}
   stamp()}
@@ -491,6 +497,11 @@ function extraDraw(j){const t=j.totals||{},act=t.active_period||t.mau||1;
 
 document.body.classList.toggle('tvm',MODE==='tv');if(MODE==='tv')wake(true);
 load();setInterval(()=>{if(KEY&&MODE!=='tv'&&!document.hidden&&$('main'))load()},120000);
+
+/* kartlardaki ? simgesi: hesaplama açıklaması */
+const HELP={"on": ["Şu an oyunda", "Son 2,5 dakika içinde oyundan canlılık sinyali gelen cihaz sayısı. Oyun açıkken her dakika (maça girip çıkınca hemen) sinyal gönderir.", "Alttaki “X kişi maçta”: bu cihazlardan o an bir maçın içinde olanlar.", "Oyunu kapatan oyuncu en geç 2,5 dakika sonra sayıdan düşer. Botlar sayılmaz."], "dau": ["Bugün oynayan", "Bugün (Türkiye saatiyle 00:00'dan beri) oyunu en az bir kez açan farklı cihaz sayısı. Aynı cihaz gün içinde 10 kez açsa da 1 sayılır.", "“Dün bu saatte”: dün aynı saate kadar oynayan cihaz sayısı; yüzde değişim buna göre.", "Cihaz bazlıdır: bir kişinin iPhone'u ve iPad'i 2 sayılır. Botlar sayılmaz."], "new": ["Bugün yeni oyuncu", "Oyunu bugün ilk kez açan cihaz sayısı (analitik kaydına bugün ilk kez giren cihazlar).", "Oyunu silip yeniden yükleyen oyuncu, cihaz kimliği sıfırlandığı için genelde yeniden “yeni oyuncu” sayılır.", "“Dün bu saatte”: dün aynı saate kadar gelen yeni oyuncu sayısı."], "mat": ["Bugün maç", "Bugün biten tüm maçların sayısı: bot maçları (Savaş), düellolar, Live Arena ve arena maçları dahil.", "Her maç bittiğinde oyun bir “maç” olayı gönderir; olaylar en geç 45 saniye içinde toplu iletilir.", "“Dün bu saatte”: dün aynı saate kadar oynanan maç sayısı. Botların kendi maçları sayılmaz."], "tot": ["Toplam oyuncu", "Analitik sistemi kurulduğundan beri oyunu en az bir kez açmış cihaz sayısı. Misafir olarak oynayanlar dahil.", "Alttaki “X hesapla giriş yaptı”: bu cihazlardan Google veya Apple hesabıyla giriş yapılmış olanlar.", "Cihaz bazlıdır: aynı kişinin iki cihazı 2 sayılır, oyunu silip yeniden yükleyen genelde yeniden sayılır. Bu yüzden “Toplam gladyatör”den yüksektir."], "gla": ["Toplam gladyatör", "Google veya Apple ile hesap açmış gerçek oyuncu sayısı (veritabanındaki hesaplar). Her kişi bir kez sayılır, kaç cihazda oynadığı fark etmez.", "Hesap açmadan misafir oynayanlar burada yoktur; onlar yalnızca “Toplam oyuncu”da görünür.", "Sıralamadaki botlar hesap olmadığı için sayılmaz."], "ply": ["Oyun süresi / kişi", "Bugün biten oturumların toplam süresi ÷ bugün oturum bitiren farklı cihaz sayısı.", "Oturum, oyun açılınca başlar; oyun kapatılınca ya da arka plana atılınca biter.", "Örnek: 100 oyuncu toplam 1.000 dakika oynadıysa kişi başı 10 dk görünür."], "inst": ["Kurulum", "Seçili tarih aralığında oyunu ilk kez açan cihaz sayısı (yeni kurulum).", "Alttaki “toplam”: analitik kurulduğundan beri tüm kurulumlar.", "Silip yeniden yükleme genelde yeni kurulum sayılır."], "act": ["Aktif oyuncu", "Seçili tarih aralığında oyunu en az bir kez açan farklı cihaz sayısı.", "“Günlük ort.”: dönemdeki günlerin “bugün oynayan” sayılarının ortalaması (ortalama DAU)."], "dmat": ["Maç", "Seçili tarih aralığında biten tüm maçlar: bot maçları, düellolar, Live Arena ve arena maçları.", "“Oyuncu başı”: maç sayısı ÷ dönemde maç oynayan cihaz sayısı."], "ses": ["Oturum", "Seçili tarih aralığında oyunun kaç kez açıldığı (yeni oturum sayısı).", "30 dakikadan uzun arka planda kalıp geri dönmek de yeni oturum sayılır.", "“Günlük ort.”: oturum sayısı ÷ dönemdeki gün sayısı."], "d1": ["Ort. D1 retention", "D1: oyunu bir gün yükleyenlerin kaçta kaçının ertesi gün tekrar açtığı. Seçili dönemdeki kurulum günlerinin ortalamasıdır.", "D7 ve D30: aynı hesap 7 ve 30 gün sonrası için.", "Henüz o güne ulaşmamış kurulum günleri ortalamaya katılmaz."], "dgla": ["Toplam gladyatör", "Google veya Apple ile hesap açmış gerçek oyuncu sayısı (tüm zamanlar). Her kişi bir kez sayılır.", "Misafirler ve botlar dahil değildir. Tarih aralığından etkilenmez."], "sig": ["Giriş yapan", "Seçili tarih aralığında oynayan cihazlardan Google veya Apple hesabıyla giriş yapılmış olanların sayısı.", "Alttaki yüzde: aktif oyuncuların kaçta kaçının hesapla giriş yaptığı. Kalanlar misafir olarak oynuyor."]};
+document.addEventListener('click',e=>{const q=e.target.closest('.hq');if(q){e.preventDefault();e.stopPropagation();const h=HELP[q.dataset.h];if(!h)return;let m=document.getElementById('hqm');if(!m){m=document.createElement('div');m.id='hqm';m.innerHTML='<div class="hqbox" role="dialog"><button class="hqx" aria-label="Kapat">×</button><h3></h3><div class="hqtx"></div></div>';document.body.appendChild(m);m.addEventListener('click',ev=>{if(ev.target===m||ev.target.closest('.hqx'))m.classList.remove('on')})}m.querySelector('h3').textContent=h[0];m.querySelector('.hqtx').innerHTML=h.slice(1).map(p=>'<p>'+p+'</p>').join('');m.classList.add('on');return}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){const m=document.getElementById('hqm');if(m)m.classList.remove('on')}});
 </script>
 </body>
 </html>
