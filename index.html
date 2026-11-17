@@ -162,7 +162,7 @@ body.tvm header{display:none}
 .bt b.up{color:#7dffad}.bt b.dn{color:#ff9a8a}
 .bt::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .9s}
 .bt.flash::after{opacity:1;box-shadow:inset 0 0 0 3px #7dffad,inset 0 0 40px rgba(125,255,173,.25);transition:opacity .1s}
-.tvrow{display:grid;gap:clamp(10px,1vw,18px);grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);min-height:0}
+.tvrow{display:grid;gap:clamp(10px,1vw,18px);grid-template-columns:repeat(7,minmax(0,1fr));min-height:0}.tvrow>.tvc{grid-column:span 4}.tvrow>.tvcol1{grid-column:span 3}/* üstteki 7 kartla aynı ızgara: aralar hizalı */
 .tvc{padding:clamp(12px,1.1vw,22px);border-radius:16px;background:linear-gradient(rgba(30,18,9,.96),rgba(12,7,4,.97));border:1.5px solid #a77a34;min-width:0;min-height:0;display:flex;flex-direction:column}
 .tvc h2{margin:0 0 8px;font-family:"Lilita One",Impact,sans-serif;font-weight:400;font-size:clamp(17px,1.35vw,28px);color:var(--g1)}
 .tvc h2 small{font-family:"Barlow Condensed",sans-serif;font-size:.62em;color:var(--tx3);margin-left:8px;font-weight:600}
@@ -194,7 +194,7 @@ body.tvm header{display:none}
 .tv .hchart svg text{font-size:clamp(12px,.85vw,17px)}
 #x3c{height:240px;flex:none}
 @media (min-width:1101px){body.tvm{overflow:hidden}html:has(body.tvm){overflow:hidden;scrollbar-width:none}html:has(body.tvm)::-webkit-scrollbar{display:none}.tv{height:100vh;height:100dvh;min-height:0;grid-template-rows:auto auto auto minmax(0,1fr)}.tvrow,.tvcol,.tvc{min-height:0}.tvcol{grid-template-rows:auto minmax(0,1fr)}.tvcol1{grid-template-rows:minmax(0,1fr)}.feed{overflow-x:hidden;overflow-y:auto}}
-@media (max-width:1100px){.big{grid-template-columns:repeat(4,minmax(0,1fr))}.tvrow{grid-template-columns:1fr}}
+@media (max-width:1100px){.big{grid-template-columns:repeat(4,minmax(0,1fr))}.tvrow{grid-template-columns:1fr}.tvrow>.tvc,.tvrow>.tvcol1{grid-column:auto}}
 @media (max-width:620px){.big{grid-template-columns:repeat(2,minmax(0,1fr))}.tvh .clock{margin-left:0;order:5}.ret{grid-template-columns:1fr 1fr 1fr}.bt b{font-size:38px}}
 
 .tv{padding-left:max(clamp(10px,1.4vw,26px),env(safe-area-inset-left));padding-right:max(clamp(10px,1.4vw,26px),env(safe-area-inset-right));padding-top:max(clamp(10px,1.4vw,26px),env(safe-area-inset-top));padding-bottom:max(clamp(10px,1.4vw,26px),env(safe-area-inset-bottom))}
