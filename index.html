@@ -295,7 +295,7 @@ function render(j){const t=j.totals||{},daily=j.daily||[],days=daily.map(d=>d.da
       <div class="tile"><button class="hq" data-h="dgla" title="Nasıl hesaplanıyor?">?</button><span>Toplam gladyatör</span><b>${t.gladiators!=null?fmt(t.gladiators):'–'}</b><em>${t.gladiators!=null?'kayıtlı hesap':'v27 SQL çalışınca görünür'}</em></div>
       <div class="tile"><button class="hq" data-h="sig" title="Nasıl hesaplanıyor?">?</button><span>Giriş yapan</span><b>${K.sig!=null?fmt(K.sig):'–'}</b><em>${K.sig!=null&&K.act?pct(K.sig,K.act)+'% aktiflerin':'dönemde oynayan'}</em></div>
     </section>
-    <div class="revs plats" id="rgplat" hidden style="margin:0 0 14px"></div>
+    <div class="revs" id="rgrev" hidden style="margin:0 0 10px"></div><div class="revs plats" id="rgplat" hidden style="margin:0 0 14px"></div>
     <section class="grid">
       <div class="card"><h2>Günlük oyuncu ve kurulum</h2><p class="sub">${PL} · aktif cihaz (DAU) ve yeni kurulum</p><div id="c1"></div></div>
       <div class="card"><h2>Günlük maç ve oturum</h2><p class="sub">${PL} · oynanan maç ve oyunu açma</p><div id="c2"></div></div>
@@ -409,8 +409,8 @@ async function loadLive(){if(!KEY)return gate();if(MODE!=='tv'||LL_BUSY)return;L
 async function loadPlatR(){const el=$('#rgplat');if(!el)return;try{const {f,t}=rgDates();const P=await rpc('analytics_platforms',{p_key:KEY,p_from:f,p_to:t});
   if(!$('#rgplat'))return;el.innerHTML=`<span class="rh">📱 Platform</span>${PFLINE(P.installs,'Dönemde kurulum')}${PFLINE(P.active,'Dönemde oynayan')}${PFLINE(P.total,'Tüm zamanlar',1)}`;el.hidden=false}
   catch(e){el.hidden=true}}
-{const R0=render;render=function(j){const r=R0.apply(this,arguments);try{loadPlatR()}catch(e){}return r}}
-let REV_T=0;async function loadRev(){const el=$('#tvrev');if(!el)return;if(Date.now()-REV_T<30000&&!el.hidden)return;REV_T=Date.now();
+{const R0=render;render=function(j){const r=R0.apply(this,arguments);try{loadPlatR()}catch(e){}try{loadRev(true)}catch(e){}return r}}
+let REV_T=0;async function loadRev(force){const el=$('#rgrev')||$('#tvrev');if(!el)return;if(!force&&Date.now()-REV_T<30000&&!el.hidden)return;REV_T=Date.now();
   try{const r=await rpc('analytics_revenue',{p_key:KEY});const $u=v=>'$'+Number(v||0).toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2});
     const NM={sg_starter:'Başlangıç',sg_chest5:'5 Sandık',sg_gold_10k:'10.000 altın',sg_gold_50k:'50.000 altın',sg_gold_100k:'100.000 altın',sg_gold_300k:'300.000 altın',sg_gold_500k:'500.000 altın'};
     const last=(r.recent||[]).find(x=>!x.refund);
@@ -422,7 +422,7 @@ function stamp(){const s=$('#tvst');if(!s)return;const age=(Date.now()-LAST_OK)/
 function buildTV(){document.body.classList.add('tvm');
   $('#app').innerHTML=`<main class="tv">
     <div class="tvh"><img class="plogo" src="${LOGO}" alt="Spin Gladiators"><h1>Canlı Panel</h1><span class="st" id="tvst"></span><span class="clock" id="tvclk"></span>${modeSeg()}<button class="btn" id="tvfs" title="Tam ekran">⛶ Tam ekran</button></div>
-    <div id="tvwarn" style="min-height:0"></div><div class="tvstrips"><div class="revs" id="tvrev" hidden></div><div class="revs plats" id="tvplat" hidden></div></div>
+    <div id="tvwarn" style="min-height:0"></div>
     <section class="big">
       <div class="bt hl"><button class="hq" data-h="on" title="Nasıl hesaplanıyor?">?</button><span><i class="dot"></i>Şu an oyunda</span><b id="v_on">–</b><em id="e_on">&nbsp;</em></div>
       <div class="bt"><button class="hq" data-h="dau" title="Nasıl hesaplanıyor?">?</button><span>Bugün oynayan</span><b id="v_dau">–</b><em id="e_dau">&nbsp;</em></div>
