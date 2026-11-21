@@ -433,8 +433,44 @@ function renderBuys(r){const el=$('#rgbuy');if(!el)return;const L=(r.recent||[])
     const th=sc.querySelector('thead').getBoundingClientRect().height,r5=rows[4].getBoundingClientRect().bottom-rows[0].getBoundingClientRect().top;sc.style.maxHeight=Math.ceil(th+r5+2)+'px';
     const mo=el.querySelector('.bmore');if(mo)sc.onscroll=()=>{mo.style.visibility=sc.scrollTop+sc.clientHeight>=sc.scrollHeight-4?'hidden':''}})}
 /* Basit görünüm: satın almalar "Son olaylar" akışına 💰 satırı olarak katılır (30 sn'de bir çekilir) */
-let BUY_FEED=[],BUYF_T=0;async function loadBuyFeed(){if(Date.now()-BUYF_T<30000)return;BUYF_T=Date.now();
-  try{const r=await rpc('analytics_revenue',{p_key:KEY});const old=BUY_FEED.length;BUY_FEED=(r.recent||[]).filter(x=>Date.now()-Date.parse(x.at)<3*36e5).map(x=>({at:x.at,k:'buy',n:x.nm||'',l:x.lv||'',cc:x.cc||'',_b:x}));
+/* ===== yeni satışta havai fişek (Basit + Detaylı) ===== */
+let BUY_SEEN=null;
+const FWCSS=document.createElement('style');FWCSS.textContent=`#fwc{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:9998}
+#fwb{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(.6);opacity:0;z-index:9999;pointer-events:none;padding:22px 44px 26px;border-radius:26px;max-width:92vw;text-align:center;
+ background:radial-gradient(120% 140% at 50% 0%,#7a4c0c,#2a1806 70%);box-shadow:0 0 0 3px #ffd25e,0 0 40px rgba(255,190,60,.8),0 18px 50px rgba(0,0,0,.6);transition:transform .45s cubic-bezier(.2,1.6,.4,1),opacity .35s}
+#fwb.on{opacity:1;transform:translate(-50%,-50%) scale(1)}#fwb .t{font-family:var(--disp,inherit);font-size:clamp(24px,3.4vw,52px);letter-spacing:2px;color:#ffe08a;text-shadow:0 2px 0 #000}
+#fwb .m{margin-top:10px;font-size:clamp(18px,2.4vw,38px);font-weight:700;color:#fff;white-space:nowrap}#fwb .m em{font-style:normal;color:#b8ff8a}#fwb .flg{height:1em;width:auto}`;document.head.appendChild(FWCSS);
+function fwSound(){try{const A=window.__fwA||(window.__fwA=new (window.AudioContext||window.webkitAudioContext)());if(A.state==='suspended')A.resume();
+  [523,659,784,1047].forEach((f,i)=>{const o=A.createOscillator(),g=A.createGain(),t=A.currentTime+i*.09;o.type='triangle';o.frequency.value=f;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.12,t+.02);g.gain.exponentialRampToValueAtTime(.001,t+.5);o.connect(g).connect(A.destination);o.start(t);o.stop(t+.55)})}catch(e){}}
+document.addEventListener('pointerdown',()=>{try{const A=window.__fwA||(window.__fwA=new (window.AudioContext||window.webkitAudioContext)());A.resume()}catch(e){}},{once:true});
+function celebrate(x){
+  let b=document.getElementById('fwb');if(!b){b=document.createElement('div');b.id='fwb';document.body.appendChild(b)}
+  b.innerHTML=`<div class="t">🎉 YENİ SATIŞ 🎉</div><div class="m">${x.cc?FLAG(x.cc)+' ':''}${x.nm?NKE(x.nm):'Bir oyuncu'} · ${PKN[PKID(x.p)]||x.p||'paket'} · <em>${BUYAMT(x)}</em></div>`;
+  requestAnimationFrame(()=>b.classList.add('on'));clearTimeout(b._t);b._t=setTimeout(()=>b.classList.remove('on'),9000);
+  fwSound();
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  let c=document.getElementById('fwc');if(!c){c=document.createElement('canvas');c.id='fwc';document.body.appendChild(c)}
+  const dpr=Math.min(2,devicePixelRatio||1),W=c.width=innerWidth*dpr,H=c.height=innerHeight*dpr,ctx=c.getContext('2d');
+  const COL=['#ffd25e','#ff6a5a','#7be35a','#5ab8ff','#ff8ad8','#ffffff','#ffb347'],P=[],R=[];let t0=performance.now(),launched=0;
+  const launch=()=>{const x0=W*(.03+Math.random()*.94);R.push({x:x0,y:H,vx:(Math.random()-.5)*3*dpr,vy:-(H*.016+Math.random()*H*.006),ty:H*(.08+Math.random()*.62),c:COL[Math.random()*COL.length|0]})};
+  const burst=(x,y,col)=>{if(P.length>9000)return;const k=Math.min(W,H)/(900*dpr),n=110+Math.random()*80|0,sp=(3+Math.random()*3.2)*dpr*Math.max(.8,k),c2=COL[Math.random()*COL.length|0],ring=Math.random()<.35;for(let i=0;i<n;i++){const a=Math.PI*2*i/n,v=sp*(.5+Math.random()*.6);P.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,l:1,d:.008+Math.random()*.008,c:Math.random()<.2?'#fff':col})}if(ring)for(let i=0;i<60;i++){const a=Math.PI*2*i/60;P.push({x,y,vx:Math.cos(a)*sp*.45,vy:Math.sin(a)*sp*.45,l:1,d:.012,c:c2})}};
+  cancelAnimationFrame(c._r);
+  for(let i=0;i<6;i++)launch();launched=6;for(let i=0;i<5;i++)setTimeout(()=>burst(W*(.08+Math.random()*.84),H*(.1+Math.random()*.6),COL[Math.random()*COL.length|0]),i*260);
+  const step=now=>{const el=now-t0;while(launched<45&&el>(launched-6)*190){launch();launched++}
+    ctx.globalCompositeOperation='destination-out';ctx.fillStyle='rgba(0,0,0,.22)';ctx.fillRect(0,0,W,H);ctx.globalCompositeOperation='lighter';
+    for(let i=R.length-1;i>=0;i--){const r=R[i];r.x+=r.vx;r.y+=r.vy;r.vy+=.06*dpr;ctx.fillStyle=r.c;ctx.beginPath();ctx.arc(r.x,r.y,2.4*dpr,0,7);ctx.fill();if(r.y<=r.ty||r.vy>=0){burst(r.x,r.y,r.c);R.splice(i,1)}}
+    for(let i=P.length-1;i>=0;i--){const q=P[i];q.x+=q.vx;q.y+=q.vy;q.vx*=.985;q.vy=q.vy*.985+.035*dpr;q.l-=q.d;if(q.l<=0){P.splice(i,1);continue}ctx.globalAlpha=q.l;ctx.fillStyle=q.c;ctx.beginPath();ctx.arc(q.x,q.y,2.2*dpr,0,7);ctx.fill()}
+    ctx.globalAlpha=1;
+    if(el<10000||P.length||R.length)c._r=requestAnimationFrame(step);else ctx.clearRect(0,0,W,H)};
+  c._r=requestAnimationFrame(step)}
+function checkNewBuys(r){const L=(r.recent||[]).filter(x=>!x.refund),key=x=>x.at+'|'+x.p;
+  if(!BUY_SEEN){BUY_SEEN=new Set(L.map(key));return}
+  const nw=L.filter(x=>!BUY_SEEN.has(key(x)));nw.forEach(x=>BUY_SEEN.add(key(x)));
+  const fresh=nw.filter(x=>Date.now()-Date.parse(x.at)<15*6e4);if(fresh.length)celebrate(fresh[0])}
+window.__celebrate=celebrate;
+setInterval(()=>{try{if(KEY)loadBuyFeed()}catch(e){}},15000);
+let BUY_FEED=[],BUYF_T=0;async function loadBuyFeed(){if(Date.now()-BUYF_T<14000)return;BUYF_T=Date.now();
+  try{const r=await rpc('analytics_revenue',{p_key:KEY});try{checkNewBuys(r)}catch(e){}const old=BUY_FEED.length;BUY_FEED=(r.recent||[]).filter(x=>Date.now()-Date.parse(x.at)<3*36e5).map(x=>({at:x.at,k:'buy',n:x.nm||'',l:x.lv||'',cc:x.cc||'',_b:x}));
     {const usd=v=>'$'+Number(v||0).toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2});const vr=$('#v_rev');
      if(vr){setNum(vr,Math.round(Number(r.today||0)*100)/100,usd);$('#e_rev').innerHTML=`${fmt(r.today_n||0)} satış · dün ${usd(r.y)}`}}
     if(BUY_FEED.length!==old&&window.LAST_LIVE)renderLive(window.LAST_LIVE)}catch(e){}}
