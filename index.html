@@ -337,7 +337,7 @@ function render(j){const t=j.totals||{},daily=j.daily||[],days=daily.map(d=>d.da
   const B=['1–5','6–10','11–15','16–20','21–25','26–30','31+'];
   hbars($('#c4'),(j.fight_by_lvl||[]).map(r=>({k:'Sv. '+B[r.b],v:r.win,lbl:r.win+'%',sm:fmt(r.n)+' maç'})),{max:100,color:'--s3'});
   hbars($('#c5'),(j.reasons||[]).map(r=>({k:REASONS[r.r]||r.r,v:r.n})),{color:'--s2'});
-  hbars($('#c6'),(j.spend||[]).map(r=>({k:SPEND[r.w]||r.w,v:r.gold,sm:'('+fmt(r.n)+')'})),{color:'--s4'});
+  hbars($('#c6'),(j.spend||[]).filter(r=>r.w!=='fee').map(r=>({k:SPEND[r.w]||r.w,v:r.gold,sm:'('+fmt(r.n)+')'})),{color:'--s4'});
   const lv=(j.levels||[]);const LB=[[1,2],[3,4],[5,6],[7,10],[11,15],[16,20],[21,30],[31,999]];
   hbars($('#c7'),LB.map(([a,b])=>({k:b>=999?'Sv. '+a+'+':a===b?'Sv. '+a:'Sv. '+a+'–'+b,v:lv.filter(x=>x.l>=a&&x.l<=b).reduce((s,x)=>s+x.n,0)})));
   hbars($('#c8'),(j.versions||[]).map(v=>({k:v.v,v:v.n})));
